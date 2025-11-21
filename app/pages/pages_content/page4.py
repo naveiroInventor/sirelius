@@ -20,49 +20,49 @@ diccioTipo = {  "Apartamento_1adulto_calef_electrica" : 6,
 listaDiccioTipo = list(diccioTipo)
 
 tipologiaSB0 = [
-            "(1924.326 kWh/año) Apartamento un adulto calefacción eléctrica",
-            "( 745.992 kWh/año) Apartamento un adulto calefacción gas",
-            "( 5931.25 kWh/año) Piso dos adultos, uno o dos niños, calefacción electrica y aire AC",
-            "(3059.416 kWh/año) Piso dos adultos, uno o dos niños, calefacción gas y aire AC",
-            "(1916.711 kWh/año) Piso dos adultos, calefacción gas y AC",
-            "(3889.858 kWh/año) Vivienda unifamiliar dos adultos, uno o dos niños, calefacción gas y AC"
+            "(1924.326 kWh/year) Apartment for one adult, electric heating",
+            "( 745.992 kWh/year) Apartment for one adult, gas heating",
+            "( 5931.25 kWh/year) Apartment for two adults, one or two children, electric heating and air conditioning",
+            "(3059.416 kWh/year) Apartment for two adults, one or two children, gas heating and air conditioning",
+            "(1916.711 kWh/year) Apartment for two adults, gas heating and AC",
+            "(3889.858 kWh/year) Detached house for two adults, one or two children, gas heating and AC"
         ]
 
 tipologiaSB = {
-    6: "(1924.326 kWh/año) Apartamento un adulto calefacción eléctrica",
-    7: "( 745.992 kWh/año) Apartamento un adulto calefacción gas",
-    9: "( 5931.25 kWh/año) Piso dos adultos, uno o dos niños, calefacción electrica y aire AC",
-    8: "(3059.416 kWh/año) Piso dos adultos, uno o dos niños, calefacción gas y aire AC",
-    12:"(1916.711 kWh/año) Piso dos adultos, calefacción gas y AC",
-    10:"(3889.858 kWh/año) Vivienda unifamiliar dos adultos, uno o dos niños, calefacción gas y AC"
+    6: "(1924.326 kWh/year) Apartment for one adult, electric heating",
+    7: "( 745.992 kWh/year) Apartment for one adult, gas heating",
+    9: "( 5931.25 kWh/year) Apartment for two adults, one or two children, electric heating and air conditioning",
+    8: "(3059.416 kWh/year) Apartment for two adults, one or two children, gas heating and air conditioning",
+    12:"(1916.711 kWh/year) Apartment for two adults, gas heating and AC",
+    10:"(3889.858 kWh/year) Detached house for two adults, one or two children, gas heating and AC"
 }
 
 def grafico_genera_tot(mgentot, mconsutot, indicesgen):
-    st.write("A continuación se muestra el gráfico para este usuario que incluye el consumo y generación fotovoltaica correspondiente para las plantas generadoras incluidas en la comunidad.")
+    st.write("The graph below shows the corresponding photovoltaic consumption and generation for this user, including the generating plants included in the community.")
 
-    dfGen = pd.DataFrame(mgentot,index=indicesgen,columns=["2_Generacion Correspondiente"])
-    dfCon = pd.DataFrame(mconsutot,index=indicesgen,columns=["1_Consumo Usuario"])
+    dfGen = pd.DataFrame(mgentot,index=indicesgen,columns=["2_Corresponding Generation"])
+    dfCon = pd.DataFrame(mconsutot,index=indicesgen,columns=["1_User Consumption"])
     dfCoef = dfCon.join(dfGen)
 
-    st.markdown("*Gráfico 0. Consumo y generación correspondiente por meses del usuario*")
+    st.markdown("*Chart 0. User's consumption and corresponding generation by month*")
     st.bar_chart(dfCoef, horizontal = False, stack=False, height = 500, width = 500,color = [ "#4343FF", "#FF9943"], x_label="Meses", y_label="kWh",)
 
-    st.markdown("De forma tabulada, los valores de generación correspondiente y el consumo mensual total del usuario serían los indicados a continuación:")
+    st.markdown("In tabular form, the corresponding generation values ​​and the user's total monthly consumption would be as follows:")
     indice = st.column_config.TextColumn(label="Mes",width="medium",required=True)
-    consumos = st.column_config.NumberColumn(label="Consumo",width="medium", format="%d kWh",required=True)
-    generacion = st.column_config.NumberColumn(label="Generación",width="medium", format="%d kWh",required=True) 
+    consumos = st.column_config.NumberColumn(label="Consumption",width="medium", format="%d kWh",required=True)
+    generacion = st.column_config.NumberColumn(label="Generation",width="medium", format="%d kWh",required=True) 
 
     st.data_editor(
                     dfCoef,
                     column_config={
                         "_index": indice,
-                        "1_Consumo Usuario": consumos,
-                        "2_Generacion Correspondiente": generacion
+                        "1_User Consumption": consumos,
+                        "2_Corresponding Generation": generacion
                     },
                     hide_index=False,
                     height = 43 * len(indicesgen),
                 )
-    st.markdown("*Tabla 0. Valores de consumo y generación por meses*")
+    st.markdown("*Table 0. Consumption and generation values ​​by month*")
 
 
 def obtencion_datos_usr():
@@ -125,8 +125,8 @@ def preparacion_lista(redListaU):
     
     # indicesUsr = [str(i)+" "+str(int(j.split("-")[1]))+" "+str(tipologiaSB[int(j.split("-")[0])]) for i,j in enumerate(redListaU)]
     
-    st.markdown("### Datos por usuario")
-    eleccion0 = st.selectbox("Tipo de Usuario",[tipologiaSB[i] for i in redLista2])
+    st.markdown("### Data per user")
+    eleccion0 = st.selectbox("User Type",[tipologiaSB[i] for i in redLista2])
     st.sidebar.write("")
     eleccion = redLista[posiRedLista[redLista2.index(diccioTipo[listaDiccioTipo[tipologiaSB0.index(eleccion0)]])]]
     
@@ -152,10 +152,10 @@ def grafico_prod_total(mDatos,start_time,end_time,indices):
     matrizaux = mDatos[:,horasInicio:horasFin,2]
     reparto = np.sum(matrizaux,axis=0)
     
-    df = pd.DataFrame(reparto,columns=["Generación Correspondiente"])
+    df = pd.DataFrame(reparto,columns=["Corresponding Generation"])
     df.index = indices
     
-    st.bar_chart(df, x_label="Horas", y_label= "kWh",color="#4343FF")
+    st.bar_chart(df, x_label="Hours", y_label= "kWh",color="#4343FF")
 
 def matrices_meses(mDatos):
     mConsumo12T = mDatos.copy()
@@ -194,11 +194,11 @@ def dataframes_datos(start_time, end_time, eleccion, diccioUsr, mDatos,diccColu)
     mdf1 = matrices_meses_media(mDatos[diccioUsr[eleccion],:,diccColu["Coeficientes"]])
     mdf2 = matrices_meses(mDatos[diccioUsr[eleccion],:,diccColu["Reparto"]])
     mdf3 = matrices_meses(mDatos[diccioUsr[eleccion],:,diccColu["Excedentes"]])
-    df0 = pd.DataFrame(mdf0,columns=["Consumo"])
-    df1 = pd.DataFrame(mdf1,columns=["Coeficiente"])
-    df2 = pd.DataFrame(mdf2,columns=["Generación Correspondiente"])
-    df3 = pd.DataFrame(mdf2 - mdf3,columns=["Autoconsumida"])
-    df3_2 = pd.DataFrame(mdf3,columns=["Excedentes"])
+    df0 = pd.DataFrame(mdf0,columns=["Consumption"])
+    df1 = pd.DataFrame(mdf1,columns=["Coefficient"])
+    df2 = pd.DataFrame(mdf2,columns=["Corresponding Generation"])
+    df3 = pd.DataFrame(mdf2 - mdf3,columns=["Self-Consumed"])
+    df3_2 = pd.DataFrame(mdf3,columns=["Surpluses"])
     
     df4 = df2.join(-1*df3)
     df4 = df4.join(-1*df3_2)
@@ -211,24 +211,24 @@ def graficado_energia(df0, df2, df3, df4, indices):
     df3.index = indices
     df4.index = indices
     
-    st.markdown("*Gráfico 1. Gráfica de Generación Correspondiente, Excedentes y Autoconsumida*")
-    st.bar_chart(df4, x_label="Horas", y_label= "kWh", color= [ "#28D06C","#4343FF", "#FF9943"])
+    st.markdown("*Figure 1. Graph of Corresponding Generation, Surpluses and Self-Consumption*")
+    st.bar_chart(df4, x_label="Hours", y_label= "kWh", color= [ "#28D06C","#4343FF", "#FF9943"])
 
     consumo = df0.sum()["Consumo"]
     generacion = df2.sum()["Generación Correspondiente"]
     autoconsumo = df3.sum()["Autoconsumida"]
 
 
-    st.write(f"Consumo en el intervalo: {consumo:.0f} kWh")
-    st.write(f"Generación Correspondiente en el intervalo: {generacion:.0f} kWh")
-    st.write(f"Autoconsumida en el intervalo: {autoconsumo:.0f} kWh")
+    st.write(f"Consumption in the interval: {consumo:.0f} kWh")
+    st.write(f"Corresponding Generation in the interval: {generacion:.0f} kWh")
+    st.write(f"Self-consumed in the interval: {autoconsumo:.0f} kWh")
 
 def graficado_coef(df1,indices):
     df1.index = indices
-    st.markdown("*Gráfico 2. Coeficientes de reparto promediados por mes para este usuario*")
+    st.markdown("*Chart 2. Average monthly distribution coefficients for this user*")
     st.bar_chart(df1, x_label = "Meses", y_label = "%", color="#4343FF")
     valor = df1.mean()["Coeficiente"]/100.0
-    st.write(f"Coeficiente Promedio en el intervalo en Porcentaje: {valor:2.4%}")
+    st.write(f"Average coefficient in the interval as a percentage: {valor:2.4%}")
 
 def coeficientes_intervalo(start_time, end_time,indices,df1,cups):
     coeficientes = []
@@ -239,6 +239,6 @@ def coeficientes_intervalo(start_time, end_time,indices,df1,cups):
     for i,j in enumerate(horas):
         coeficientes.append([cups,str(10001+j)[-4:],"{:.6f}".format(df1["Coeficiente"][indices[i]]/100.0)])
 
-    dfaux = pd.DataFrame(coeficientes,columns=["CUPS","hora","Coeficiente"])
+    dfaux = pd.DataFrame(coeficientes,columns=["CUPS","hour","Coefficient"])
     st.dataframe(dfaux,hide_index=True)
 
