@@ -11,11 +11,11 @@ import pandas as pd
 import logging
 
 def creacion_CE(geolocator,ce):
-    st.info("Nota aclaratoria: Obligatorio cumplimentar Nombre de la comunidad y Ubicación. No emplear signos de puntuación")
-    st.header("Comunidad")
-    st.markdown("### Datos Generales")
-    nombreCE = st.text_input("Nombre de la comunidad *",help="Poner el nombre que tiene la comunidad.")
-    ubicacion = st.text_input("Ubicación *",help="Poner el nombre de la ciudad o pueblo. Por ejemplo: Zaragoza.")
+    st.info("Clarification note: Community Name and Location are required. Do not use punctuation marks.")
+    st.header("Community")
+    st.markdown("### General Data")
+    nombreCE = st.text_input("Community name *",help="Enter the name of the community.")
+    ubicacion = st.text_input("Location *",help="Enter the name of the city or town. For example: Zaragoza.")
     coste = 100000.00
     amortizacion = 1000.00
     dfComu = pd.DataFrame([])
@@ -23,20 +23,20 @@ def creacion_CE(geolocator,ce):
     deshabilitadoCE = True
     gralComu = None
     if nombreCE=="":
-        st.write("Falta el nombre")
+        st.write("The name is missing.")
     elif comprobarStrings(nombreCE):
-        st.warning("Nombre no válido. Quitar signos de puntuación.")
+        st.warning("Invalid name. Remove punctuation marks.")
     elif comprobarStrings(ubicacion):
-        st.warning("Ubicación no válida. Quitar signos de puntuación.")
+        st.warning("Invalid location. Remove punctuation marks.")
     elif ubicacion == "":
-        st.write("Falta la ubicación")
+        st.write("Location is missing")
     else:
         deshabilitadoCE = False
         gralComu = (nombreCE,ubicacion,coste,amortizacion)
 
     comunidadEnerg = {}
-    colums = ("Nombre","Ubicacion","Coste","Amortizacion")
-    if st.button("Crea comunidad",type="primary", disabled = deshabilitadoCE):
+    colums = ("Name","Location","Cost","Amortization")
+    if st.button("Create community",type="primary", disabled = deshabilitadoCE):
         try:
             if gralComu != None:
                 dfComu = camposDataframe("comunidades",gralComu,colums)
@@ -46,32 +46,32 @@ def creacion_CE(geolocator,ce):
                 comunidadEnerg["id_administrator"] = 1
                 ce = True
         
-            st.info("Datos cumplimentados")
+            st.info("Data completed")
             st.session_state.nComunidad = nombreCE
             st.session_state.saltoSimu = False
-            st.success('Ya puedes pasar a la página Datos y cumplimentar los datos de la instalación', icon="✅")
+            st.success('You can now go to the Data page and fill in the installation details.', icon="✅")
             try:
                 st.session_state.localizador = geolocator.geocode(ubicacion)
             except:
-                logging.debug("No se ha podido incluir la localización en la creación de la CE.")
+                logging.debug("It was not possible to include the location in the creation of the EC.")
         except Exception as e:
-            logging.error("No se ha podido incluir la comunidad: ", exc_info=True)    
+            logging.error("The community could not be included: ", exc_info=True)    
     
     return comunidadEnerg, dfComu, ce
 
 def instalacion_fv(ce,fv):
-    st.info("Nota aclaratoria: Si hay eólica y no hay FV, puedes pasar al definir la generación eólica.")
+    st.info("Clarification note: If there is wind power but no PV, you can proceed to defining wind power generation.")
     tipologiasFV = {
         "Monocristalino":1,
         "Policristalino":2
     }
     location = st.session_state.localizador
-    st.header("Generadores FV")
-    st.markdown("### Formulario de incorporación generador FV")
-    descFV = st.text_input("Descripción de los generadores FV", value = "FV1",help="Poner una breve descripción para diferenciarlo de otros generadores, ya que puedes hacer la simulación con más de una planta fotovoltaica. No usar signos de puntuación.", disabled= not ce)
+    st.header("PV Generators")
+    st.markdown("### PV Generator Incorporation Form")
+    descFV = st.text_input("Description of PV generators", value = "FV1",help="Include a brief description to differentiate it from other generators, as you can run the simulation with more than one photovoltaic plant. Do not use punctuation.", disabled= not ce)
  
-    latiFV = st.number_input("Latitud instalación", help = "Puede obtener las coordenadas de google maps haciendo clic con el botón derecho en la ubicación de los paneles", disabled= not ce, value = location.latitude, max_value=90.0, min_value=-90.0,format="%2.6f")
-    longFV = st.number_input("Longitud instalación", help = "Puede obtener las coordenadas de google maps haciendo clic con el botón derecho en la ubicación de los paneles", disabled= not ce, value = location.longitude, max_value=180.0, min_value=-180.0, format="%2.6f")
+    latiFV = st.number_input("Latitude", help = "You can get the Google Maps coordinates by right-clicking on the location of the panels.", disabled= not ce, value = location.latitude, max_value=90.0, min_value=-90.0,format="%2.6f")
+    longFV = st.number_input("Longitude", help = "You can get the Google Maps coordinates by right-clicking on the location of the panels.", disabled= not ce, value = location.longitude, max_value=180.0, min_value=-180.0, format="%2.6f")
     
     df = pd.DataFrame(
         {
@@ -82,44 +82,44 @@ def instalacion_fv(ce,fv):
 
     st.map(df, latitude="col1", longitude="col2")
     nModulos = 10
-    pPicoFV = st.number_input("Potencia pico total FV [kW]",help="Poner la potencia pico de toda la planta fotovoltaica situada en las coordenadas que se han indicado.",min_value=0.0, disabled= not ce)
+    pPicoFV = st.number_input("Total peak PV power [kW]",help="Set the peak power of the entire photovoltaic plant located at the coordinates indicated.",min_value=0.0, disabled= not ce)
     tipoMod = "Monocristalino"
-    azimuth = st.number_input("Azimuth en grados[-90 E, 0 S, 90 O, 180 N]", disabled= not ce,min_value=-90,max_value=180,value=0,step=1)
-    inclinacion = st.number_input("Inclinación en grados [0 horizontal, 90 vertical]", disabled= not ce,min_value=0,max_value=90,value=30,step=1)
+    azimuth = st.number_input("Azimuth in degrees[-90 E, 0 S, 90 O, 180 N]", disabled= not ce,min_value=-90,max_value=180,value=0,step=1)
+    inclinacion = st.number_input("Tilt in degrees[0 horizontal, 90 vertical]", disabled= not ce,min_value=0,max_value=90,value=30,step=1)
 
     deshabilitadoFV = True
 
     if descFV=="":
-        st.warning("Falta la descripción")
+        st.warning("Description is missing")
     elif pPicoFV == 0.0:
-        st.warning("Falta la potencia pico")
+        st.warning("Peak power is missing")
     elif comprobarStrings(descFV):
-        st.warning("Descripción no válida. Quitar signos de puntuación.")
+        st.warning("Invalid description. Remove punctuation marks.")
     else:
         deshabilitadoFV = False
-        st.info("Ya puedes añadir la planta fotovoltaica. Asegúrate de que los datos son correctos antes de pasar al siguiente campo.")
+        st.info("You can now add the photovoltaic plant. Make sure the data is correct before moving to the next field.")
 
-    AddGenFv = st.button("Añade Fotovoltaica",type="primary", disabled= (not ce or deshabilitadoFV))
+    AddGenFv = st.button("Add Photovoltaics",type="primary", disabled= (not ce or deshabilitadoFV))
 
     aux = (descFV,latiFV,longFV,nModulos,pPicoFV,tipologiasFV[tipoMod],int(azimuth),int(inclinacion))
-    colums = ("Descripcion","latitud","longitud","cantidad","Wp Total","Tipo","azimuth","inclinacion")
+    colums = ("Description", "latitude", "longitude", "quantity", "Total Wp", "Type", "azimuth", "tilt")
     
     dfFV = camposDataframe("fotovolt",aux,colums,AddGenFv)
 
     if len(st.session_state["fotovolt"]) == 0:
-        st.write("No hay planta generadora FV")
+        st.write("There is no PV generating plant")
     else:
         fv = True
-        st.success("Hay al menos una planta generadora FV en la comunidad. Asegúrate de que los datos son correctos antes de pasar al siguiente campo. Una vez revisado, puedes pasar a la siguiente pestaña: Eólicos.")
+        st.success("There is at least one PV generating plant in the community. Please ensure the information is correct before proceeding to the next field. Once verified, you can move on to the next tab: Wind.")
 
     numeroFV = 0.0
     infoFV = st.session_state["fotovolt"]
     for i in infoFV:
         numeroFV += i[4]
-    st.write("Total potencia FV instalada: ",numeroFV)
+    st.write("Total installed PV capacity: ",numeroFV)
     st.dataframe(dfFV)
 
-    if st.button("Borrar planta FV"):
+    if st.button("Delete PV plant"):
         borrar("fotovolt",aux)
         st.rerun()
     
@@ -127,12 +127,12 @@ def instalacion_fv(ce,fv):
 
 def instalacion_eo(ce,eo):
     location = st.session_state.localizador
-    st.info("Nota aclaratoria: Si hay FV y no hay eólica, puedes pasar a la siguiente pestaña")
-    st.header("Generadores eólicos")
-    st.markdown("### Formulario de incorporación generador Eólico")
-    descEo = st.text_input("Descripción de los generadores eólicos", value = "EO1",help="Poner una breve descripción para diferenciarlo de otros generadores, ya que puedes hacer la simulación con más de un generador eólico. No usar signos de puntuación.", disabled= not ce)
-    latiEo = st.number_input("Latitud eólico", help = "Puede obtener las coordenadas de google maps haciendo clic con el botón derecho en la ubicación de los aerogeneradores", disabled= not ce,value = location.latitude,max_value=90.0,min_value=-90.0,format="%2.6f")
-    longEo = st.number_input("Longitud eólico", help = "Puede obtener las coordenadas de google maps haciendo clic con el botón derecho en la ubicación de los aerogeneradores", disabled= not ce,value = location.longitude,max_value=180.0,min_value=-180.0,format="%2.6f")
+    st.info("Clarification note: If there is PV and no wind power, you can skip to the next tab")
+    st.header("Wind turbines")
+    st.markdown("### Wind Turbine Application Form")
+    descEo = st.text_input("Description of wind turbines", value = "EO1",help="Include a brief description to differentiate it from other generators, as you can run the simulation with more than one wind turbine. Do not use punctuation.", disabled= not ce)
+    latiEo = st.number_input("Latitude wind turbine", help = "You can get the Google Maps coordinates by right-clicking on the location of the wind turbines.", disabled= not ce,value = location.latitude,max_value=90.0,min_value=-90.0,format="%2.6f")
+    longEo = st.number_input("Longitude wind turbine", help = "You can get the Google Maps coordinates by right-clicking on the location of the wind turbines.", disabled= not ce,value = location.longitude,max_value=180.0,min_value=-180.0,format="%2.6f")
     df = pd.DataFrame(
         {
             "col1": np.array([latiEo]),
@@ -141,110 +141,110 @@ def instalacion_eo(ce,eo):
     )
 
     st.map(df, latitude="col1", longitude="col2")
-    pPicoEo = st.number_input("Potencia pico eólico [kW]",help="Potencia pico del aerogenerador.", disabled= not ce, min_value= 0.0)
+    pPicoEo = st.number_input("Peak wind power [kW]",help="Peak power of the wind turbine.", disabled= not ce, min_value= 0.0)
 
     deshabilitadoEO = True
 
     if descEo=="":
-        st.warning("Falta la descripción")
+        st.warning("Description is missing")
     elif comprobarStrings(descEo):
-        st.warning("Descripción no válida. Quitar signos de puntuación.")
+        st.warning("Invalid description. Remove punctuation marks.")
     elif pPicoEo == 0.0:
-        st.warning("Falta la potencia pico")
+        st.warning("Peak power is missing")
     else:
         deshabilitadoEO = False
-        st.info("Ya puedes añadir el aerogenerador. Asegúrate de que los datos son correctos antes de pasar al siguiente campo")
+        st.info("You can now add the wind turbine. Make sure the information is correct before moving to the next field.")
 
-    AddGenEo = st.button("Añade Eólica",type="primary", disabled= (not ce or deshabilitadoEO))
+    AddGenEo = st.button("Add Wind Power",type="primary", disabled= (not ce or deshabilitadoEO))
 
     aux = (descEo,latiEo,longEo,pPicoEo)
-    colums = ("Descripcion","latitud","longitud","Wp")
+    colums = ("Description", "latitude", "longitude", "Wp")
 
     dfEO = camposDataframe("eolicos",aux,colums,AddGenEo)
 
     if len(st.session_state["eolicos"]) == 0:
-        st.write("No hay planta generadora eólica")
+        st.write("There is no wind power plant")
     else:
         eo = True
-        st.success("Hay al menos un aerogenerador en la comunidad. Asegúrate de que los datos son correctos antes de pasar al siguiente campo. Una vez revisado puedes pasar a la siguiente pestaña: Baterías.")
+        st.success("There is at least one wind turbine in the community. Please ensure the information is correct before proceeding to the next field. Once verified, you can move on to the next tab: Batteries.")
 
     numeroEO = 0.0
     infoEo = st.session_state["eolicos"]
     for i in infoEo:
         numeroEO += i[3]
-    st.write("Total potencia eólica instalada: ",numeroEO)
+    st.write("Total installed wind power:",numeroEO)
     st.dataframe(dfEO)
 
-    if st.button("Borrar eólicos"):
+    if st.button("Delete wind turbines"):
         borrar("eolicos",aux)
         st.rerun()
     
     return dfEO, numeroEO, eo
 
 def instalacion_bat(ce, fv, eo, gen):
-    st.info("Si no hay baterías, puedes pasar al apartado de usuarios")
+    st.info("If there are no batteries, you can skip to the user section.")
     if fv or eo:
         gen = True
     tipologiasBat = {
         "Litio":1,
         "Otras":2
     }
-    st.header("Baterías")
-    st.markdown("### Descripción de las Baterías")
-    descBat = st.text_input("Descripción sobre las baterías", value = "BAT1", help="Poner una breve descripción para diferenciar las baterías que quiere poner entre sí, ya que puedes hacer la simulación con más de una batería. No usar signos de puntuación.",disabled= not (gen and ce))
+    st.header("Batteries")
+    st.markdown("### Battery Description")
+    descBat = st.text_input("Battery Description", value = "BAT1", help="Include a brief description to differentiate the batteries you want to use, as you can run the simulation with more than one battery. Do not use punctuation.",disabled= not (gen and ce))
     tipoBat = "Litio"
-    st.markdown("### Características técnicas")
+    st.markdown("### Technical specifications")
 
     voltajeBat =   220
-    capacidadBat = st.number_input("Capacidad de las baterías [kWh]", help = "Capacidad nominal de las baterías en kWh" , value = 0.0, disabled= not (gen and ce), min_value=0.0)
+    capacidadBat = st.number_input("Battery capacity [kWh]", help = "Nominal battery capacity in kWh" , value = 0.0, disabled= not (gen and ce), min_value=0.0)
     cargaMaxBat =  capacidadBat
     cargaMinBat =  0.1*capacidadBat
-    arranquedBat = st.number_input("Potencia [kW]", help = "Potencia de las baterías que se obtiene de multiplicar la tensión nominal y la intensidad nominal. Si no tiene claros estos valores, poner la mitad del valor de la capacidad." ,disabled= not (gen and ce), value = capacidadBat/2.,min_value = 0.0)
+    arranquedBat = st.number_input("Power [kW]", help = "Battery power is obtained by multiplying the nominal voltage and the nominal current. If you are unsure of these values, use half the capacity." ,disabled= not (gen and ce), value = capacidadBat/2.,min_value = 0.0)
     descMaxBat =  arranquedBat*1.0
 
     deshabilitadoBat = True
 
     if descBat=="":
-        st.warning("Falta la descripción")
+        st.warning("Description is missing")
     elif comprobarStrings(descBat):
-        st.warning("Descripción no válida. Quitar signos de puntuación.")
+        st.warning("Invalid description. Remove punctuation marks.")
     elif tipoBat == "":
-        st.warning("Falta el tipo de batería")
+        st.warning("The battery type is missing.")
     elif capacidadBat == 0.0:
-        st.warning("Falta la capacidad de la batería")
+        st.warning("The battery capacity is missing.")
     elif arranquedBat == 0.0:
-        st.write("Falta la potencia")
+        st.write("Power is missing")
     else:
         deshabilitadoBat = False
-        st.info("Ya puedes añadir el almacenamiento. Asegúrate de que los datos son correctos antes de pasar al siguiente campo.")
+        st.info("You can now add the energy storage. Make sure the information is correct before moving to the next field.")
 
-    AddAlmBat = st.button("Añade Almacenamiento",type="primary", disabled= (not ce or (not gen or deshabilitadoBat)))
+    AddAlmBat = st.button("Add Energy Storage",type="primary", disabled= (not ce or (not gen or deshabilitadoBat)))
 
     aux = (descBat,tipologiasBat[tipoBat],voltajeBat,capacidadBat,cargaMaxBat,cargaMinBat,arranquedBat,descMaxBat)
-    colums = ("Descripcion","tipo","Voltaje","Capacidad","Carga Max","Carga min","Potencia","Descarga Max")
+    colums = ("Description", "Type", "Voltage", "Capacity", "Maximum Load", "Minimum Load", "Power", "Maximum Discharge")
 
     dfBat = camposDataframe("baterias",aux,colums,AddAlmBat)
 
     if len(st.session_state["baterias"]) == 0:
-        st.write("No hay almacenamiento")
+        st.write("No Energy Storage")
     else:
         bt = True
-        st.success("Hay almacenamiento en la comunidad. Asegúrate de que los datos son correctos. Una vez revisados, puedes pasar a la siguiente pestaña: Usuarios.")
+        st.success("There is energy storage available in the community. Please ensure the information is correct. Once reviewed, you can proceed to the next tab: Users.")
     numeroBat = 0.0
     infBat = st.session_state["baterias"]
     for i in infBat:
         numeroBat += float(i[3])
-    st.write("Total de almacenamiento instalado: ",numeroBat)
+    st.write("Total installed storage: ",numeroBat)
     st.dataframe(dfBat)
 
-    if st.button("Borrar"):
+    if st.button("Delete Storage"):
         borrar("baterias",aux)
         st.rerun()
 
     return dfBat, numeroBat
 
 def registro_usuarios(ce, gen, usr):
-    st.info("Nota aclaratoria: una vez estén todos los usuarios, puede pasar a la siguiente parte de subida de datos")
+    st.info("Clarification note: Once all users are present, you can proceed to the next part of the data upload.")
     tipologias = [
         "Apartamento_1adulto_calef_electrica",
         "Apartamento_1adulto_calef_gas",
@@ -254,57 +254,57 @@ def registro_usuarios(ce, gen, usr):
         "Viv_unif_2adultos_1-2niños_calef_gas_aire_ac"]
     
     tipologiaSB = [
-        "(1924.326 kWh/año)Apartamento un adulto calefacción eléctrica",
-        "(745.992 kWh/año)Apartamento un adulto calefacción gas",
-        "(5931.25 kWh/año)Piso dos adultos, uno o dos niños, calefacción electrica y aire AC",
-        "(3059.416 kWh/año)Piso dos adultos, uno o dos niños, calefacción gas y aire AC",
-        "(1916.711 kWh/año)Piso dos adultos, calefacción gas y AC",
-        "(3889.858 kWh/año)Vivienda unifamiliar dos adultos, uno o dos niños, calefacción gas y AC"
+        "(1924.326 kWh/year)Apartment for one adult, electric heating",
+        "(745.992 kWh/year)Apartment for one adult, gas heating",
+        "(5931.25 kWh/year)Apartment for two adults, one or two children, electric heating and air conditioning",
+        "(3059.416 kWh/year)Apartment for two adults, one or two children, gas heating and air conditioning",
+        "(1916.711 kWh/year)Apartment for two adults, gas heating and AC",
+        "(3889.858 kWh/year)Detached house for two adults, one or two children, gas heating and AC"
     ]
 
-    st.header("Usuarios")
-    tipoUser = st.selectbox("Tipología de usuario",tipologiaSB, help="Seleccionar una tipología de vivienda para los tipos de miembros de la comunidad." , disabled= not (gen and ce))
-    cantUser = st.number_input("Cantidad de usuarios con esta tipología", help="Indicar cuántos usuarios hay con la tipología seleccionada.",disabled= not (gen and ce), min_value=1,step=1)
+    st.header("Users")
+    tipoUser = st.selectbox("User typology",tipologiaSB, help="Select a housing typology for the types of community members." , disabled= not (gen and ce))
+    cantUser = st.number_input("Number of users with this typology", help="Indicate how many users there are with the selected type.",disabled= not (gen and ce), min_value=1,step=1)
 
-    AddUser = st.button("Añade Usuarios",type="primary", disabled= not (gen and ce))
+    AddUser = st.button("Add Users",type="primary", disabled= not (gen and ce))
 
     aux = [tipologias[tipologiaSB.index(tipoUser)],cantUser]
 
-    dfUs = camposDataframe("usuarios",aux,("Tipo de usuario","cantidad"),AddUser)
+    dfUs = camposDataframe("usuarios",aux,("User type","quantity"),AddUser)
 
     if len(st.session_state["usuarios"]) == 0:
-        st.warning("No hay usuarios")
+        st.warning("No users")
     else:
         usr = True
-        st.success("Hay usuarios en la comunidad. Asegúrate de que están incluidos todos los usuarios y de que los datos son correctos antes de pasar a la siguiente pestaña: Coeficientes.")
+        st.success("There are users in the community. Make sure all users are included and that the data is correct before moving to the next tab: Coefficients.")
 
     numeroUsers = 0
     infoUsers = st.session_state["usuarios"]
     for i in infoUsers:
         numeroUsers += i[1]
-    st.write("Total usuarios: ",numeroUsers)
+    st.write("Total Users: ",numeroUsers)
     st.dataframe(dfUs)
 
-    if st.button("Borrar usuarios"):
+    if st.button("Delete Users"):
         borrar("usuarios",aux)
         st.rerun()
 
     return dfUs, numeroUsers, usr
 
 def registro_coeficientes(numeroUsers,comunidadEnerg):
-    st.info("Nota aclaratoria: Puede dejar los coeficientes de reparto como están o modificar los valores máximo, mínimo y de pobreza energética para calcular el reparto de la energía producida. Si todo está correcto, puede pasar a la siguiente pestaña: Confirmación.")
-    st.header("Coeficientes de reparto")
+    st.info("Clarification note: You can leave the distribution coefficients as they are or modify the maximum, minimum, and energy poverty values ​​to calculate the distribution of the energy produced. If everything is correct, you can proceed to the next tab: Confirmation.")
+    st.header("Distribution coefficients")
     
-    with st.expander("Explicación"):
-        st.write("Los coeficientes de reparto son los factores por los que se multiplica la producción para obtener el reparto de la energía producida. La elección del valor de estos coeficientes es decisión de la comunidad energética y se debe aceptar por parte de los miembros de ésta. En esta simulación se proponen los posibles coeficientes de reparto para que haya el mínimo de excedente vertido a red para sacar el mayor rendimiento a la producción.")
+    with st.expander("Explanation"):
+        st.write("The distribution coefficients are the factors by which production is multiplied to determine how the energy produced is distributed. The energy community decides on these coefficients and must accept them. This simulation proposes possible distribution coefficients to minimize the surplus fed into the grid and maximize the return on production.")
 
-    pobrezaE = st.number_input("Porcentaje para pobreza energética",min_value=0.0, max_value=100.0,step=1.0,help = "El porcentaje dedicado a pobreza energética es el porcentaje de energía que se reservará para los casos seleccionados por la comunidad.")
+    pobrezaE = st.number_input("Percentage for energy poverty",min_value=0.0, max_value=100.0,step=1.0,help = "The percentage dedicated to energy poverty is the percentage of energy that will be reserved for cases selected by the community.")
     try:
         valorAux = (100.0-pobrezaE)/numeroUsers
     except ZeroDivisionError:
         valorAux = 50.0
-    coefMax = st.number_input("Coeficiente máximo", min_value = valorAux, max_value = 100.0,value=100.0,step=1.0,help="El coeficiente máximo consiste en el valor máximo que puede tomar en la simulación el coeficiente de reparto para un único usuario. Se puede poner esta restricción para el caso de que un usuario tenga un consumo muy superior y evitar que acapare toda la producción.")
-    coefmin = st.number_input("Coeficiente mínimo", min_value = 0.0, max_value = valorAux,value=0.0,step=1.0,help="El coeficiente mínimo consiste en el valor mínimo que puede tomar en la simulación el coeficiente de reparto para un único usuario. Se puede poner esta restricción para evitar que un usuario tenga muy poca participación debido a tener poco consumo.")
+    coefMax = st.number_input("Maximum coefficient", min_value = valorAux, max_value = 100.0,value=100.0,step=1.0,help="The maximum coefficient is the highest value the distribution coefficient can take in the simulation for a single user. This restriction can be applied in cases where a user's consumption is significantly higher, preventing them from monopolizing all the production.")
+    coefmin = st.number_input("Minimum coefficient", min_value = 0.0, max_value = valorAux,value=0.0,step=1.0,help="The minimum coefficient is the smallest value the distribution coefficient can take in the simulation for a single user. This restriction can be imposed to prevent a user from having very little share due to low consumption.")
 
     comunidadEnerg["max_participation"]=coefMax
     comunidadEnerg["min_participation"]=coefmin
@@ -320,15 +320,15 @@ def confirmacion(datos):
                     "Viv_unif_2adultos_1-2niños_calef_gas_aire_ac" : 10
     }
 
-    st.info("Nota aclaratoria: La simulación sólo se ejecutará correctamente tras haber confirmado los datos que se encuentran resumidos en esta pestaña haciendo click en el botón Confirmar Datos del final de esta página")
+    st.info("Clarification note: The simulation will only run correctly after you have confirmed the data summarized in this tab by clicking the Confirm Data button at the bottom of this page.")
     st.header("Datos finales")
     try:
-        st.markdown("""### Nombre de la comunidad: {}""".format(str(st.session_state.comunidades[-1][0])))
+        st.markdown("""### Community name: {}""".format(str(st.session_state.comunidades[-1][0])))
     except:
         st.write()
     st.write("")
     try:
-        st.markdown("""### Localización de la comunidad: {}""".format(str(st.session_state.comunidades[-1][1])))
+        st.markdown("""### Community location: {}""".format(str(st.session_state.comunidades[-1][1])))
     except:
         st.write()
     
@@ -346,7 +346,7 @@ def confirmacion(datos):
                     diccioFVaux[j] = k
                 fotovoltaicos.append(diccioFVaux)
     except:
-        st.write("No hay generadores fotovoltaicos asignados")
+        st.write("There are no photovoltaic generators assigned")
 
     # Diccionarios de las instalaciones eolicas
     conceptos= ["description", "latitude", "longitude", "wind_peak_power"]
@@ -361,7 +361,7 @@ def confirmacion(datos):
                 eolicos.append(diccioEOaux)
 
     except:
-        st.write("No hay generadores eólicos asignados")
+        st.write("There are no wind turbines assigned")
 
     # Diccionarios de las baterias
     conceptos= ["ds_storage_system","id_battery_type", "voltage", "nominal_capacity", "max_limit", "min_limit", "init_capacity", "max_hour_discharge"]
@@ -375,7 +375,7 @@ def confirmacion(datos):
                     diccioBataux[j] = k
                 baterias.append(diccioBataux)
     except:
-        st.write("No hay baterías asignadas")
+        st.write("No batteries assigned")
 
     # Diccionarios de los usuarios
     conceptos = ["id_consumer_profile"]
@@ -388,39 +388,39 @@ def confirmacion(datos):
                 for i in range(us[1]):
                     usuarios.append(valor)
     except:
-        st.write("No hay usuarios asignados")
+        st.write("There are no assigned users")
 
 
-    st.header("Resumen de datos")
+    st.header("Data summary")
 
-    st.write("Generadores FV:")
+    st.write("PV Generators:")
     st.dataframe(dfFV)
     
     dfaux = pd.DataFrame(
         {
-            "col1": dfFV["latitud"],
-            "col2": dfFV["longitud"],
+            "col1": dfFV["latitude"],
+            "col2": dfFV["longitude"],
         }
     )
 
     st.map(dfaux, latitude="col1", longitude="col2", color = (0.2, 0.2, 0.5, 0.5))
 
-    st.write("Generadores eólicos:")
+    st.write("Wind turbines:")
     st.dataframe(dfEO)
 
     
     dfaux2 = pd.DataFrame(
         {
-            "col1": dfEO["latitud"],
-            "col2": dfEO["longitud"],
+            "col1": dfEO["latitude"],
+            "col2": dfEO["longitude"],
         }
     )
 
     st.map(dfaux2, latitude="col1", longitude="col2", color = (0.2, 0.5, 0.2, 0.5))
-    st.write("Almacenamiento:")
+    st.write("Energy storage:")
     st.dataframe(dfBat)
 
-    st.write("Usuarios:")
+    st.write("Users:")
     st.dataframe(dfUs)
 
     idComunidad = 0
@@ -428,13 +428,13 @@ def confirmacion(datos):
     col1, col2, col3 = st.columns(3)
     with col1:
         # Reset button
-        if st.button("Resetear todo"):
+        if st.button("Reset all"):
             st.session_state.clear()  # Rerun the script
             st.session_state["authentication_status"] = None
             st.rerun(scope="app")
     with col3:
         sub = False
-        if st.button("Confirmar Datos",type="primary", disabled= not ((usr and gen) and ce)):
+        if st.button("Confirm Data",type="primary", disabled= not ((usr and gen) and ce)):
             currentDateTime = dt.datetime.now()
             start = currentDateTime.strftime('%Y-%m-%d %H:%M:%S')
             st.session_state.procesosCurso = start
@@ -451,16 +451,16 @@ def confirmacion(datos):
                     st.session_state.informe["cantidadBat"] = numeroBat
                     st.session_state.informe["cantidadUsers"] = numeroUsers
 
-                    st.write("Exportación realizada, ID de la comunidad: ",idComunidad)
+                    st.write("Export completed, community ID: ",idComunidad)
                     sub = True
                     st.session_state.envioInfo = True
                 except Exception as e:
-                    logging.error("En el envío de los datos: ", exc_info=True)
-                    st.error("Error en la ejecución del programa, pruebe a ir a la pestaña de acceso, recargar la página y volver a ingresar los datos. Si el error persiste, consulte los logs o hable con el administrador.")
-                    st.write("Error en el envío")
+                    logging.error("In sending the data: ", exc_info=True)
+                    st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
+                    st.write("Error in sending")
             
     if sub:
-        st.success("Puede pasar a la pestaña de simulación para realizar la simulación de producción, consumos y reparto energético para el año que seleccione.")
+        st.success("You can go to the simulation tab to perform the simulation of production, consumption and energy distribution for the year you select.")
 
 
 
