@@ -11,7 +11,7 @@ import pandas as pd
 
 from pages.coef_scripts.agente_Basico import Agente_MySql
 
-meses = ["01-Ene", "02-Feb", "03-Mar", "04-Abr", "05-May", "06-Jun", "07-Jul", "08-Ago", "09-Sep", "10-Oct", "11-Nov", "12-Dic"]
+meses = ["01-Ene", "02-Feb", "03-Mar", "04-Apr", "05-May", "06-Jun", "07-Jul", "08-Aug", "09-Sep", "10-Oct", "11-Nov", "12-Dec"]
 
 diccioTipo = {  "Apartamento_1adulto_calef_electrica" : 6,
                 "Apartamento_1adulto_calef_gas" : 7,
@@ -24,47 +24,47 @@ diccioTipo = {  "Apartamento_1adulto_calef_electrica" : 6,
 listaDiccioTipo = list(diccioTipo)
 
 tipologiaSB0 = [
-            "Apartamento un adulto calefacción eléctrica",
-            "Apartamento un adulto calefacción gas",
-            "Piso dos adultos, uno o dos niños, calefacción electrica y aire AC",
-            "Piso dos adultos, uno o dos niños, calefacción gas y aire AC",
-            "Piso dos adultos, calefacción gas y AC",
-            "Vivienda unifamiliar dos adultos, uno o dos niños, calefacción gas y AC"
+            "(1924.326 kWh/year) Apartment for one adult, electric heating",
+            "( 745.992 kWh/year) Apartment for one adult, gas heating",
+            "( 5931.25 kWh/year) Apartment for two adults, one or two children, electric heating and air conditioning",
+            "(3059.416 kWh/year) Apartment for two adults, one or two children, gas heating and air conditioning",
+            "(1916.711 kWh/year) Apartment for two adults, gas heating and AC",
+            "(3889.858 kWh/year) Detached house for two adults, one or two children, gas heating and AC"
         ]
 
 tipologiaSB = {
-    6: "(1924.326 kWh/año)Apartamento un adulto calefacción eléctrica",
-    7: "(745.992 kWh/año)Apartamento un adulto calefacción gas",
-    9: "(5931.25 kWh/año)Piso dos adultos, uno o dos niños, calefacción electrica y aire AC",
-    8: "(3059.416 kWh/año)Piso dos adultos, uno o dos niños, calefacción gas y aire AC",
-    12:"(1916.711 kWh/año)Piso dos adultos, calefacción gas y AC",
-    10:"(3889.858 kWh/año)Vivienda unifamiliar dos adultos, uno o dos niños, calefacción gas y AC"
+    6: "(1924.326 kWh/year) Apartment for one adult, electric heating",
+    7: "( 745.992 kWh/year) Apartment for one adult, gas heating",
+    9: "( 5931.25 kWh/year) Apartment for two adults, one or two children, electric heating and air conditioning",
+    8: "(3059.416 kWh/year) Apartment for two adults, one or two children, gas heating and air conditioning",
+    12:"(1916.711 kWh/year) Apartment for two adults, gas heating and AC",
+    10:"(3889.858 kWh/year) Detached house for two adults, one or two children, gas heating and AC"
 }
 
 
 def introduccion():
-    st.markdown("Las comunidades energéticas son entidades jurídicas basadas en la participación abierta y voluntaria, autónomas y efectivamente controladas por socios o miembros que están situados en las proximidades de los proyectos de energías renovables que sean propiedad de dichas entidades jurídicas y que estas hayan desarrollado, cuyos socios o miembros sean personas físicas, pymes o autoridades locales, incluidos los municipios y cuya finalidad primordial sea proporcionar beneficios medioambientales, económicos o sociales a sus socios o miembros o a las zonas locales donde operan, en lugar de ganancias financieras.")
+    st.markdown("Energy communities are legal entities based on open and voluntary participation, autonomous and effectively controlled by partners or members who are located in the vicinity of renewable energy projects owned and developed by said legal entities, whose partners or members are natural persons, SMEs or local authorities, including municipalities and whose primary purpose is to provide environmental, economic or social benefits to their partners or members or to the local areas where they operate, rather than financial gains.")
 
 def desarrollo():
-    st.markdown("Los resultados de este informe son previsiones que se realizan en base a consumos tipo que no tienen por qué coincidir con el consumo real de los usuarios. Es una aproximación que sirve de orientación para poder tomar una decisión respecto a la comunidad.")
+    st.markdown("The results in this report are forecasts based on typical consumption patterns that may not reflect actual user consumption. It is an approximation intended as a guide to help inform community decisions.")
 
 def desenlace(meses2):
     st.write("\n")
     st.write("\n")
-    st.markdown("###### Responsabilidades")
-    st.markdown("###### Esta información es facilitada por endef mediante el uso de software libre desarrollado para el apoyo a las comunidades energéticas. Esta app es una herramienta informática diseñada para realizar simulaciones con fines informativos y educativos. Si bien se han implementado metodologías rigurosas para mejorar la precisión de los resultados, Endef no garantiza la exactitud ni idoneidad de los datos generados.")
+    st.markdown("###### Responsibilities")
+    st.markdown("###### This information is provided by Endef using open-source software developed to support energy communities. This app is a computer tool designed to run simulations for informational and educational purposes. While rigorous methodologies have been implemented to improve the accuracy of the results, Endef does not guarantee the accuracy or suitability of the generated data.")
 
-    st.markdown("###### El usuario reconoce y acepta que:")
+    st.markdown("###### The user acknowledges and accepts that:")
 
-    st.markdown("###### - Uso Bajo Responsabilidad Propia: El usuario es el único responsable de la aplicación de los resultados.")
+    st.markdown("###### - Use at Your Own Risk: The user is solely responsible for the application of the results.")
 
-    st.markdown("###### - Limitación de Responsabilidad: En ningún caso Endef será responsable de daños directos, indirectos, incidentales, especiales o consecuentes, incluyendo, pero sin limitarse a, pérdidas económicas, interrupciones del negocio, daños a equipos o cualquier otro perjuicio derivado del uso o incapacidad de uso del software.")
-    st.markdown("###### Al utilizar esta app, el usuario acepta esta exención de responsabilidad en su totalidad.")
+    st.markdown("###### - Limitation of Liability: In no event shall Endef be liable for any direct, indirect, incidental, special or consequential damages, including, but not limited to, economic losses, business interruptions, damage to equipment or any other injury arising out of the use of or inability to use the software.")
+    st.markdown("###### By using this app, the user accepts this disclaimer in its entirety.")
     
     col1,col2,col3 = st.columns(3)
 
     with col1:
-        st.write("Zaragoza, "+str(dt.datetime.today().day)+" de "+meses2[dt.datetime.today().month-1]+" de "+str(dt.datetime.today().year))
+        st.write("Zaragoza, "+meses2[dt.datetime.today().month-1]+" "+str(dt.datetime.today().day)+","+str(dt.datetime.today().year))
     
     with col3:
         st.write("\n")
@@ -135,39 +135,39 @@ def preparacion_desplegable(redListaU):
     return indicesUsr
 
 def texto_propio():
-    st.markdown("### Consumos Totales Anuales Por Usuario")
-    texto = "La comunidad de "+str(st.session_state.nComunidad)
+    st.markdown("### Total Annual Consumption Per User")
+    texto = "The community of "+str(st.session_state.nComunidad)
     if st.session_state.informe["cantidadFV"] > 0.0:
-        texto = texto + " cuenta con una potencia fotovoltaica instalada de "+str(st.session_state.informe["cantidadFV"])+"kW"
+        texto = texto + " It has an installed photovoltaic capacity of "+str(st.session_state.informe["cantidadFV"])+"kW"
     if st.session_state.informe["cantidadEO"] > 0.0:
-        texto = texto + ", la potencia eólica instalada es "+str(st.session_state.informe["cantidadEO"])+"kW"
+        texto = texto + ", the installed wind power is "+str(st.session_state.informe["cantidadEO"])+"kW"
     if st.session_state.informe["cantidadBat"] > 0.0:
-        texto = texto + " y "+str(st.session_state.informe["cantidadBat"])+"kWh de almacenamiento"
+        texto = texto + " y "+str(st.session_state.informe["cantidadBat"])+"kWh of storage"
     texto += "."
 
     st.markdown(texto)
     
-    st.markdown(" En el siguiente gráfico de barras se pueden apreciar los valores de los consumos, generación correspondiente y energía autoconsumida, en valores totales anuales, para cada usuario de la comunidad, en kWh, para el año especificado en la simulación("+str(st.session_state.anyo)+").")
+    st.markdown("The following bar chart shows the values ​​of consumption, corresponding generation and self-consumed energy, in total annual values, for each user in the community, in kWh, for the year specified in the simulation("+str(st.session_state.anyo)+").")
 
 def grafico_tabla_consumos(indicesUsr,mConsumos,mReparto,mExcedentes):
-    dfCon = pd.DataFrame(mConsumos,index=indicesUsr,columns=["2_Consumos"])
-    dfRep = pd.DataFrame(mReparto,index=indicesUsr,columns=["1_Generación Correspondiente"])
-    dfExc = pd.DataFrame(mExcedentes,index=indicesUsr,columns=["3_Autoconsumida"])
+    dfCon = pd.DataFrame(mConsumos,index=indicesUsr,columns=["2_Consumptions"])
+    dfRep = pd.DataFrame(mReparto,index=indicesUsr,columns=["1_Corresponding Generations"])
+    dfExc = pd.DataFrame(mExcedentes,index=indicesUsr,columns=["3_self-consumed"])
     dfF = dfRep.join(dfCon)
     dfF = dfF.join(dfExc)
     dfF2 = dfF.copy()
     dfF2.index = [i for i in range(len(mConsumos))]
 
     st.markdown("")
-    st.markdown("*Gráfico 1. Valores de energía consumida, generación correspondiente y energía autoconsumida*")
-    st.bar_chart(dfF2, horizontal = False, height = 500, width = 500, stack=False,color= [  "#FF9943","#4343FF","#28D06C"], x_label="Usuarios", y_label="kWh")
+    st.markdown("*Figure 1. Values ​​of energy consumed, corresponding generation and self-consumed energy*")
+    st.bar_chart(dfF2, horizontal = False, height = 500, width = 500, stack=False,color= [  "#FF9943","#4343FF","#28D06C"], x_label="Users", y_label="kWh")
 
-    indice = st.column_config.TextColumn(label="Usuarios",width="medium",required=True)
-    consumos = st.column_config.NumberColumn(label="Consumos",width="small", format="%d kWh",required=True)
-    autoconsumida = st.column_config.NumberColumn(label="Autoconsumida",width="small", format="%d kWh",required=True)
-    generacion = st.column_config.NumberColumn(label="Generación",width="small", format="%d kWh",required=True)
+    indice = st.column_config.TextColumn(label="Users",width="medium",required=True)
+    consumos = st.column_config.NumberColumn(label="Consumption",width="small", format="%d kWh",required=True)
+    autoconsumida = st.column_config.NumberColumn(label="Self-consumed",width="small", format="%d kWh",required=True)
+    generacion = st.column_config.NumberColumn(label="Generation",width="small", format="%d kWh",required=True)
 
-    st.markdown("De forma tabulada, los valores totales anuales serían los indicados a continuación:")
+    st.markdown("In tabular form, the total annual values ​​would be as follows:")
     st.data_editor( 
                     dfF,
                     height = 43 * len(mConsumos),
@@ -175,61 +175,61 @@ def grafico_tabla_consumos(indicesUsr,mConsumos,mReparto,mExcedentes):
                     hide_index=False,
                     column_config={
                         "_index": indice,
-                        "1_Generación Correspondiente":generacion,
-                        "2_Consumos":consumos,
-                        "3_Autoconsumida":autoconsumida,
+                        "1_Corresponding Generation":generacion,
+                        "2_Consumption":consumos,
+                        "3_Self-consumed":autoconsumida,
                     },
                 )
-    st.markdown("*Tabla 1. Valores de consumo, generación correspondiente y autoconsumida*")
+    st.markdown("*Table 1. Consumption values, corresponding generation and self-consumption*")
 
 def texto_coef():
-    st.markdown("### Coeficientes de reparto")
-    st.markdown("Los coeficientes de reparto son los factores por los que se multiplica la producción para obtener el reparto de la energía producida. La elección del valor de estos coeficientes es decisión de la comunidad energética y se debe aceptar por parte de los miembros de ésta.")
-    st.markdown("En esta simulación se proponen los posibles coeficientes de reparto basando los cálculos en los consumos de los usuarios de la comunidad y distribuyendo la energía producida proporcionalmente a estos consumos. Con este cálculo se busca que haya el mínimo de excedente vertido a red porque permite sacar el mayor rendimiento a la producción.")
-    st.markdown("El coeficiente máximo seleccionado para la simulación es **"+str(st.session_state.datoscomunidad["max_participation"])+"%** que consiste en el valor máximo que puede tomar en la simulación el coeficiente de reparto para un único usuario. Se puede poner esta restricción para el caso de que un usuario tenga un consumo muy superior y evitar que acapare toda la producción.")
-    st.markdown("El coeficiente mínimo seleccionado para la simulación es **"+str(st.session_state.datoscomunidad["min_participation"])+"%** que consiste en el valor mínimo que puede tomar en la simulación el coeficiente de reparto para un único usuario. Se puede poner esta restricción para evitar que un usuario tenga muy poca participación debido a tener poco consumo.")
-    st.markdown("El porcentaje dedicado a pobreza energética es **"+str(st.session_state.datoscomunidad["energy_poverty"])+"%** que es el porcentaje de energía que se dedicará para los casos seleccionados.")
+    st.markdown("### Distribution coefficients")
+    st.markdown("The distribution coefficients are the factors by which production is multiplied to determine the distribution of the energy produced. The choice of these coefficients is a decision made by the energy community and must be accepted by its members.")
+    st.markdown("This simulation proposes possible distribution coefficients based on the consumption of the community's users, distributing the energy produced proportionally to this consumption. This calculation aims to minimize the surplus fed into the grid, thus maximizing the efficiency of production.")
+    st.markdown("The maximum coefficient selected for the simulation is **"+str(st.session_state.datoscomunidad["max_participation"])+"%**. This represents the maximum value that the distribution coefficient can take in the simulation for a single user. This restriction can be applied in cases where a user has a significantly higher consumption, preventing them from monopolizing all the production.")
+    st.markdown("The minimum coefficient selected for the simulation is **"+str(st.session_state.datoscomunidad["min_participation"])+"%**. This represents the minimum value that the distribution coefficient can take in the simulation for a single user. This restriction can be imposed to prevent a user from having very little share due to low consumption.")
+    st.markdown("The percentage dedicated to energy poverty is **"+str(st.session_state.datoscomunidad["energy_poverty"])+"%** which is the percentage of energy that will be dedicated to the selected cases.")
 
 def grafico_genera_tot(mgentot, mconsutot, indicesgen):
-    st.write("A continuación se muestra el gráfico de consumo total de los usuarios y generación fotovoltaica para las plantas generadoras incluidas en la comunidad.")
+    st.write("The following graph shows the total consumption of users and photovoltaic generation for the generating plants included in the community.")
 
-    dfGen = pd.DataFrame(mgentot,index=indicesgen,columns=["Generacion"])
-    dfCon = pd.DataFrame(mconsutot,index=indicesgen,columns=["Consumo"])
+    dfGen = pd.DataFrame(mgentot,index=indicesgen,columns=["Generation"])
+    dfCon = pd.DataFrame(mconsutot,index=indicesgen,columns=["Consumption"])
     dfCoef = dfCon.join(dfGen)
 
-    indice = st.column_config.TextColumn(label="Mes",width="small",required=True)
-    consumo = st.column_config.NumberColumn(label="Consumo",width="medium", format="%d kWh",required=True)
-    generacion = st.column_config.NumberColumn(label="Generación",width="medium", format="%d kWh",required=True)
+    indice = st.column_config.TextColumn(label="Month",width="small",required=True)
+    consumo = st.column_config.NumberColumn(label="Consumption",width="medium", format="%d kWh",required=True)
+    generacion = st.column_config.NumberColumn(label="Generation",width="medium", format="%d kWh",required=True)
 
-    st.markdown("*Gráfico 0. Consumo y generación por meses de la planta de generación*")
-    st.bar_chart(dfCoef, horizontal = False, stack=False, height = 500, width = 500,color = [ "#4343FF", "#FF9943"], x_label="Meses", y_label="kWh",)
+    st.markdown("*Chart 0. Consumption and generation by month of the power plant*")
+    st.bar_chart(dfCoef, horizontal = False, stack=False, height = 500, width = 500,color = [ "#4343FF", "#FF9943"], x_label="Months", y_label="kWh",)
 
-    st.markdown("De forma tabulada, los valores de generación y el consumo mensual total de la comunidad serían los indicados a continuación:")
+    st.markdown("In tabular form, the generation values ​​and the total monthly consumption of the community would be as indicated below:")
 
     st.data_editor(
                     dfCoef,
                     column_config={
                         "_index": indice,
-                        "Consumo": consumo,
-                        "Generacion": generacion,
+                        "Consumption": consumo,
+                        "Generation": generacion,
                     },
                     hide_index=False,
                     height = 43 * len(indicesgen),
                 )
-    st.markdown("*Tabla 0. Valores de consumo y generación por meses*")
+    st.markdown("*Table 0. Consumption and generation values ​​by month*")
 
 def grafico_tabla_coef(mCoef,indicesUsr):
     dfCoef = pd.DataFrame(mCoef,index=indicesUsr,columns=["%"])
         
     dfCoef2 = dfCoef.copy()
     dfCoef2.index = [i for i in range(len(indicesUsr))]
-    st.markdown("*Gráfico 2. Valores promedios anuales de coeficientes de reparto por usuario*")
+    st.markdown("*Chart 2. Average annual values ​​of distribution coefficients per user*")
     st.bar_chart(dfCoef2, horizontal = False, height = 500, width = 500,color = "#4343FF", x_label="Usuario", y_label="%",)
 
-    st.markdown("De forma tabulada, los valores promedios anuales serían los indicados a continuación:")
+    st.markdown("In tabular form, the average annual values ​​would be as follows:")
 
-    indice = st.column_config.TextColumn(label="Usuarios",width="medium",required=True)
-    porcentaje = st.column_config.NumberColumn(label="Coeficiente [%]",width="medium", format="%.4f",required=True)
+    indice = st.column_config.TextColumn(label="Users",width="medium",required=True)
+    porcentaje = st.column_config.NumberColumn(label="Coefficient [%]",width="medium", format="%.4f",required=True)
 
     st.data_editor(
                     dfCoef,
@@ -240,7 +240,7 @@ def grafico_tabla_coef(mCoef,indicesUsr):
                     hide_index=False,
                     height = 43 * len(indicesUsr),
                 )
-    st.markdown("*Tabla 2. Valores promedios anuales de coeficientes de reparto por usuario*")
+    st.markdown("*Table 2. Average annual values ​​of distribution coefficients per user.*")
 
 def contenido_graficos():
 
@@ -290,4 +290,4 @@ def contenido_graficos():
         grafico_tabla_coef(mCoef,indicesUsr)
         
     except:
-        st.markdown("# Realice la simulación para ver los resultados")
+        st.markdown("# Run the simulation to see the results.")
