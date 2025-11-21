@@ -15,15 +15,15 @@ from pages.pages_content.page2 import instalacion_bat, registro_usuarios, regist
 
 # Comienza la pagina
 try:
-    st.title("Datos comunidad de : "+str(st.session_state.comunidades[-1][0]) + " [" + str(st.session_state.comunidades[-1][1]) + "]")
+    st.title("Community data from: "+str(st.session_state.comunidades[-1][0]) + " [" + str(st.session_state.comunidades[-1][1]) + "]")
 except:
-    st.title("Ponga nombre y localidad de la Comunidad.")
+    st.title("Enter the name and location of the Community.")
 
 
 from zoneinfo import ZoneInfo
 espana = ZoneInfo("Europe/Madrid")
 st.write(dt.datetime.today().astimezone(espana).__format__('%d %b %Y, %I:%M%p'))
-st.info("Se deben rellenar todos los campos requeridos antes de la subida de datos y la simulación. Prestar atención a los avisos en cada pestaña")
+st.info("All required fields must be completed before uploading data and running the simulation. Pay attention to the warnings on each tab.")
 
 st.sidebar.markdown(
     """<a href="https://endef.com/">
@@ -34,7 +34,7 @@ st.sidebar.markdown(
     unsafe_allow_html=True,
 )
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7= st.tabs(["Fotovoltaicos","Eólicos", "Baterías", "Usuarios","Coeficientes", "Confirmación", "Simular"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7= st.tabs(["Photovoltaics","Wind", "Batteries", "Users","Coefficients", "Confirmation", "Simulate"])
 try:
     ce = any(st.session_state["comunidades"])
 except:
@@ -56,21 +56,23 @@ if ce:
         try:
             dfFV, numeroFV, fv = instalacion_fv(ce, fv)
         except Exception as e:
-            logging.debug("En la fotovoltaica: ", exc_info=True)
+            logging.debug("In photovoltaics:", exc_info=True)
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
 
     with tab2:
         try:
             dfEO, numeroEO, eo = instalacion_eo(ce, eo)
         except Exception as e:
-            logging.debug("En la eolica: ", exc_info=True)
+            logging.debug("In wind power:", exc_info=True)
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
             
     with tab3:
         try:
             dfBat, numeroBat = instalacion_bat(ce, fv, eo, gen)
     
         except Exception as e:
-            logging.debug("En las baterías: ", exc_info=True)
-            st.error("Error en la ejecución del programa, pruebe a ir a la pestaña de acceso, recargar la página y volver a ingresar los datos. Si  el error persiste, consulte los logs o hable con el administrador.")
+            logging.debug("In the batteries: ", exc_info=True)
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
             
     with tab4:
         if fv or eo:
@@ -80,14 +82,14 @@ if ce:
         
         except Exception as e:
             logging.error("En los usuarios: ", exc_info=True)
-            st.error("Error en la ejecución del programa, pruebe a ir a la pestaña de acceso, recargar la página y volver a ingresar los datos. Si  el error persiste, consulte los logs o hable con el administrador.")
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
     
     with tab5:
         try:
             registro_coeficientes(numeroUsers,comunidadEnerg)
         except Exception as e:
             logging.error("En los coeficinetes: ", exc_info=True)
-            st.error("Error en la ejecución del programa, pruebe a ir a la pestaña de acceso, recargar la página y volver a ingresar los datos. Si  el error persiste, consulte los logs o hable con el administrador.")
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
     
     with tab6:
         datos=[comunidadEnerg, dfComu, ce, dfFV, numeroFV, dfEO, numeroEO, dfBat, numeroBat, gen, dfUs, numeroUsers, usr]
@@ -95,20 +97,20 @@ if ce:
             confirmacion(datos)
         except Exception as e:
             logging.error("En la confirmación de los datos: ", exc_info=True)
-            st.error("Error en la ejecución del programa, pruebe a ir a la pestaña de acceso, recargar la página y volver a ingresar los datos. Si  el error persiste, consulte los logs o hable con el administrador.")
+            st.error("Program execution error. Try going to the login tab, reloading the page, and re-entering your information. If the error persists, check the logs or contact your administrator.")
         
     
     with tab7:
     
-        st.info("Nota aclaratoria: La simulación sólo se debe ejecutar tras haber exportado los datos. Debe seleccionar el año del que quiere   realizar la simulación y luego hacer click en el botón Simular.")
+        st.info("Clarification note: The simulation should only be run after the data has been exported. You must select the year for which you want to run the simulation and then click the Simulate button.")
         try:
-            st.markdown("""## Nombre de la comunidad: {}""".format(str(st.session_state.comunidades[-1][0])))
+            st.markdown("""## Community name: {}""".format(str(st.session_state.comunidades[-1][0])))
             simulable = True
         except:
             st.write()
             simulable = False
     
-        date_year = st.number_input("Año de la simulación", disabled= not simulable and not st.session_state.envioInfo, value = int(dt.datetime.now ().year), min_value=2020,step=1)
+        date_year = st.number_input("Simulation year", disabled= not simulable and not st.session_state.envioInfo, value = int(dt.datetime.now ().year), min_value=2020,step=1)
         
     
         if 'run_button' in st.session_state and st.session_state.run_button == True:
@@ -116,14 +118,14 @@ if ce:
         else:
             st.session_state.running = False
     
-        if st.button('Simular', disabled=((not any(st.session_state.procesosCurso)) or st.session_state.saltoSimu or st.session_state.running),     type="primary", key='run_button'):
+        if st.button('Simulate', disabled=((not any(st.session_state.procesosCurso)) or st.session_state.saltoSimu or st.session_state.running),     type="primary", key='run_button'):
             exitoSim, Objeto_comunidad = calcula2(st.session_state.procesosCurso,date_year)
             st.session_state.anyo = date_year
             st.session_state.saltoSimu = True
             
             if exitoSim:
-                st.success("Puede ver los resultados yendo a los enlaces de Resultados Generales e Individuales de la barra lateral.")
-                st.write("Momento de inicio del proceso: ", st.session_state.procesosCurso)
+                st.success("You can view the results by going to the General and Individual Results links in the sidebar.")
+                st.write("Start time of the process:", st.session_state.procesosCurso)
                 
                 a_zero = ["comunidades","usuarios","fotovolt","eolicos","baterias","usuariosCE"]
                 for i in a_zero:
@@ -131,4 +133,4 @@ if ce:
                 st.session_state.contenidoComu = Objeto_comunidad
 
 else:
-    st.markdown("# Introduzca el nombre y localización de su comunidad")
+    st.markdown("# Enter the name and location of your community")
