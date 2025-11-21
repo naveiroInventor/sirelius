@@ -101,7 +101,7 @@ if 'localizador' not in st.session_state:
 
 from zoneinfo import ZoneInfo
 espana = ZoneInfo("Europe/Madrid")
-st.markdown("# SOFTWARE DE SIMULACIÓN DE COMUNIDADES ENERGÉTICAS")
+st.markdown("# ENERGY COMMUNITY SIMULATION SOFTWARE")
 st.write(dt.datetime.today().astimezone(espana).__format__('%d %b %Y, %I:%M%p'))
 
 ce = False
